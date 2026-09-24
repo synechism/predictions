@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Compiled extension / CUDA build artifacts
+*.so
+*.o
+*.obj
+*.ptx
+*.cubin
+predictions/_C*.so
+
+# JIT extension cache
+.cache/
+torch_extensions/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Weights / data / outputs
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+outputs/
+checkpoints/
