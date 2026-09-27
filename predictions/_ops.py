@@ -9,6 +9,7 @@ This keeps the package importable everywhere — the reference fallback lets you
 develop and test the sampling logic on CPU-only machines, while the real kernels
 kick in automatically on a CUDA box.
 """
+
 from __future__ import annotations
 
 import os
@@ -46,7 +47,7 @@ def _try_jit():
                 os.path.join(csrc, "kernels", "denoise_step.cu"),
             ],
             extra_include_paths=[os.path.join(csrc, "include")],
-            extra_cuda_cflags=["-O3", "--use_fast_math"],
+            extra_cuda_cflags=["-O3"],
             verbose=False,
         )
         return ext, "jit"
@@ -92,3 +93,15 @@ def denoise_step(
     if _EXT is not None and x_t.is_cuda:
         return _EXT.denoise_step(x_t, eps, float(coef_x), float(coef_eps))
     return reference.denoise_step(x_t, eps, coef_x, coef_eps)
+
+
+def clipped_ddim_step(
+    x_t: torch.Tensor,
+    eps: torch.Tensor,
+    alpha_t: float,
+    alpha_prev: float,
+    clip_range: float = 1.0,
+) -> torch.Tensor:
+    if _EXT is not None and x_t.is_cuda:
+        return _EXT.clipped_ddim_step(x_t, eps, alpha_t, alpha_prev, clip_range)
+    return reference.clipped_ddim_step(x_t, eps, alpha_t, alpha_prev, clip_range)

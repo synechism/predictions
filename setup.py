@@ -4,13 +4,18 @@ Falls back to a CPU-only / no-extension install when CUDA is unavailable, so the
 Python package still imports (kernels then route through the PyTorch reference
 implementations). See predictions/_ops.py.
 """
+
+from pathlib import Path
+
 from setuptools import setup
+
+ROOT = Path(__file__).parent.resolve()
 
 try:
     import torch
-    from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+    from torch.utils.cpp_extension import BuildExtension, CUDAExtension, CUDA_HOME
 
-    HAS_CUDA = torch.cuda.is_available() or torch.version.cuda is not None
+    HAS_CUDA = torch.version.cuda is not None and CUDA_HOME is not None
 except Exception:  # torch not importable at build time
     HAS_CUDA = False
 
@@ -25,10 +30,10 @@ if HAS_CUDA:
                 "csrc/bindings.cpp",
                 "csrc/kernels/denoise_step.cu",
             ],
-            include_dirs=["csrc/include"],
+            include_dirs=[str(ROOT / "csrc" / "include")],
             extra_compile_args={
                 "cxx": ["-O3"],
-                "nvcc": ["-O3", "--use_fast_math"],
+                "nvcc": ["-O3"],
             },
         )
     ]

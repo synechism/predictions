@@ -19,6 +19,12 @@ dev = [
     "pytest>=7",
     "ninja",
 ]
+demo = [
+    "diffusers>=0.35,<0.41",
+    "accelerate>=1,<2",
+    "safetensors>=0.6",
+    "Pillow>=10",
+]
 
 [tool.setuptools]
 packages = ["predictions"]
